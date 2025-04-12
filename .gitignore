@@ -1,1 +1,23 @@
+# Byte-compiled / optimized / DLL files
 __pycache__/
+*.py[cod]
+*.pyo
+
+# Logs and temporary files
+*.log
+*.tmp
+
+# Data files
+*.pkl
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Environment and dependency files
+.env
+.venv/
+*.egg-info/
+
+# OS-specific files
+.DS_Store
+Thumbs.db
