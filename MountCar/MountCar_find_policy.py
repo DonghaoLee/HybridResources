@@ -5,7 +5,7 @@ import numpy as np
 import gymnasium as gym
 from tqdm import tqdm
 
-from Env import MCenv_wrapper
+from src.Env import MCenv_wrapper
 
 # Set parameters
 Env_Seed = 1

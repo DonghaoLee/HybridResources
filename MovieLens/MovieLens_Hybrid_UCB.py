@@ -1,7 +1,7 @@
 # from read_data import get_movie_data
 import numpy as np
 import pickle
-from Env import MovieLens_Contextual_Bandit
+from src.Env import MovieLens_Contextual_Bandit
 from tqdm import tqdm
 
 if __name__ == '__main__':

@@ -15,74 +15,33 @@ This repository includes implementations for four tasks: Linear Contextual Bandi
 
 ## Linear Contextual Bandits
 
- - Generate Sub-optimality Gap Experiments:
+To run the experiments for Linear Contextual Bandits, use the following bash script:
 
-```
-python Contextual_Hybrid_UCB.py
-```
-
- - Generate Regret Experiments:
-
-```
-python Contextual_Hybrid_UCB-Regret.py
+```bash
+bash LinearContextual.sh
 ```
 
 ## Tabular MDPs
 
- - Generate Sub-optimality Gap Experiments:
+To run the experiments for Tabular MDPs, use the following bash script:
 
-```
-python TabularMDP_Hybrid_UCB.py
-```
-
- - Generate Regret Experiments:
-
-```
-python TabularMDP_Hybrid_UCB-Regret.py
+```bash
+bash TabularMDP.sh
 ```
 
-## Main Paper Plots
-
-To generate the plots of experiments in the main paper, linear contextual bandits and tabular MDPs, run:
-
-```
-python draw.py
-```
 
 ## MovieLens Environment
 
- - Generate Sub-optimality Gap and Regret Experiments:
+To run the experiments for the MovieLens Environment, use the following bash script:
 
-```
-python MovieLens_Hybrid_UCB.py
-python MovieLens_Hybrid_UCB-Regret.py
-```
-
- - Plot Results:
-
-```
-python MovieLens_draw.py
+```bash
+bash MovieLens.sh
 ```
 
 ## MountainCar Environment
 
-Since the offline datasets are generated a little different from previous tasks, we need to first generate the offline datasets with the following command.
+To run the experiments for the MountainCar Environment, use the following bash script:
 
- - Generate Offline Datasets:
-
-```
-python MountCar_Generate_OfflineData.py
-```
-
- - Generate Sub-optimality Gap and Regret Experiments:
-
-```
-python MountCar_Hybrid_UCB.py
-python MountCar_Hybrid_UCB-Regret.py
-```
-
- - Plot Results:
-
-```
-python MountCar_draw.py
+```bash
+bash MountCar.sh
 ```

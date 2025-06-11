@@ -5,11 +5,11 @@ import numpy as np
 import gymnasium as gym
 from tqdm import tqdm
 import pickle
+import random
 
-from Env import MCenv_wrapper
+from src.Env import MCenv_wrapper
 
 # Set parameters
-# Env_Seed = 1
 env_id = 'MountainCar-v0'
 gym_env = gym.make(env_id)
 
@@ -21,12 +21,18 @@ N_Actions = act_dim
 gamma = 0.99
 env = MCenv_wrapper(gym_env, N_states=N_States, N_actions=N_Actions)
 
+with open('MountCarOffline.pkl', 'rb') as f:
+    data = pickle.load(f)
+    offline_data = data['OfflineData']
+
+
 # UCB algorithm implementation
-def Sample_offline(env, off_alpha, 
-        N_trials=50, 
-        N_offline=1000,
+def Hybrid_UCB(env, off_alpha, 
+        N_trials=50,
+        N_offline=0,
+        N_online=1000, 
         beta=1.):
-    
+    """Upper Confidence Bound algorithm for exploration and policy optimization."""
     def update_transitions():
         """Update transition probabilities and bonuses."""
         for s in range(env.S):
@@ -36,8 +42,6 @@ def Sample_offline(env, off_alpha,
                 else:
                     trans[s, a] = count[s, a] / sa_count[s, a]
                     bonus[s, a] = np.minimum(beta * np.sqrt(1 / sa_count[s, a]), bonus[s, a])
-    
-    """Upper Confidence Bound algorithm for exploration and policy optimization."""
 
     hhist = []
     reward_func = np.expand_dims(env.reward, axis=-1)
@@ -45,22 +49,23 @@ def Sample_offline(env, off_alpha,
         print(f"Trial {trial + 1}/{N_trials}")
         
         # Original Offline Collection
-        # offline_hist = env.policy_pull_multi(offline_policy, N_offline) 
-        # count = np.zeros([env.S, env.A, env.S])
-        # for x in offline_hist:
-        #     for s, a, s_p in x:
-        #         count[s, a, s_p] += 1
+        count = np.zeros([env.S, env.A, env.S])
+        off_data = random.sample(offline_data[0.0], int((1 - off_alpha) * N_offline)) + random.sample(offline_data[1.0], int(off_alpha * N_offline))
+        for x in off_data:
+            for s, a, s_p in x:
+                count[s, a, s_p] += 1
         
         hist = []
-        count = np.zeros([env.S, env.A, env.S])
         sa_count = np.sum(count, axis = -1)
         bonus = np.ones((N_States, N_Actions))
         trans = np.zeros((N_States, N_Actions, N_States))
         update_transitions()
         
+        
+        
         last_V = np.zeros(N_States)
         last_pess_V = np.zeros(N_States)
-        for i in tqdm(range(N_offline)):
+        for i in tqdm(range(N_online)):
             # Find an exploration policy using value iteration
             
             while True:
@@ -85,7 +90,7 @@ def Sample_offline(env, off_alpha,
         
             
             while True:                
-                Qa = off_alpha * reward_func + (1 - off_alpha) * bonus + gamma * np.einsum('sap,p->sa', trans, last_pess_V)
+                Qa = np.maximum(reward_func - bonus + gamma * np.einsum('sap,p->sa', trans, last_pess_V), 0.)
                 new_pess_V = np.max(Qa, axis=1)
                 if np.max(np.abs(new_pess_V - last_pess_V)) < 0.01:
                     break
@@ -96,9 +101,9 @@ def Sample_offline(env, off_alpha,
                 pess_policy[s, a] = 1.0
             
             # Record the evaluation results
-            hist.append(env.policy_pull(pess_policy))
-
-        hhist += hist
+            hist.append(env.emp_eval(pess_policy, N=1))
+            
+        hhist.append(hist)
 
     return hhist
 
@@ -107,12 +112,26 @@ def Sample_offline(env, off_alpha,
 
 # different offline policies
 
-offline_data = {}
-for key in [0.0, 0.5, 1.0]: #
+
+suboptimality_Noff = {}
+for key in [0.0, 0.5, 1.0]:
     print(key)
-    hhist = Sample_offline  (env, key, N_trials=1, N_offline=10000, beta = 0.2)
-    offline_data[key] = hhist
+    hhist = Hybrid_UCB(env, key, N_trials=10, N_offline=2000, N_online=20000, beta=0.2)
+    suboptimality_Noff[key] = hhist
+    
+with open('MountCar_OfflineN.pkl', 'wb') as f:
+    pickle.dump({'offline': offline_data,
+                 'suboptimality':suboptimality_Noff}, f)
 
-with open('MountCarOffline.pkl', 'wb') as f:
-    pickle.dump({'OfflineData': offline_data}, f)
+# different numbers of offline trajectories
 
+suboptimality_N0 = {}
+policy = 0.5
+for key in [0, 2000, 4000]: # 
+    print(key)
+    hhist = Hybrid_UCB(env, policy, N_trials=10, N_offline=key, N_online=20000, beta=0.2)
+    suboptimality_N0[str(key)] = hhist
+
+with open('MountCar_OfflineN_diff.pkl', 'wb') as f:
+    pickle.dump({'offline': 0.5,
+                 'suboptimality':suboptimality_N0}, f)

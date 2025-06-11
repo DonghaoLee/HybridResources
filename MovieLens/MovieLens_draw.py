@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 import pickle
-from utils import compute_avg
+from src.utils import compute_avg
 
 # # Load MovieLens Data
 

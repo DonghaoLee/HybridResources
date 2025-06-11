@@ -3,7 +3,7 @@
 
 import numpy as np
 import pickle
-from Env import TabularMDP
+from src.Env import TabularMDP
 
 # Set parameters
 Env_Seed = 1

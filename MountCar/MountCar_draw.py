@@ -6,7 +6,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.ticker import ScalarFormatter
 import pickle
-from utils import compute_avg
+from src.utils import compute_avg
 
 def smooth_data(data, window_size):
     # Create a window (kernel) for the moving average

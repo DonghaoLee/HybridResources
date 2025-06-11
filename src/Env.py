@@ -3,7 +3,7 @@ import pickle
 import numpy as np
 import matplotlib.pyplot as plt
 import time
-from utils import RandomSimplexVector
+from .utils import RandomSimplexVector
 
 class Contextual_Bandit(object):
     def __init__(self, S = 20, A = 100, d = 10, noise = 1., seed = 0):

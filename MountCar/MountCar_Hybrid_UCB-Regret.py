@@ -7,7 +7,7 @@ from tqdm import tqdm
 import pickle
 import random
 
-from Env import MCenv_wrapper
+from src.Env import MCenv_wrapper
 
 # Set parameters
 env_id = 'MountainCar-v0'

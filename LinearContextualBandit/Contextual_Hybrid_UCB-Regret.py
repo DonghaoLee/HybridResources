@@ -3,7 +3,7 @@
 
 import numpy as np
 import pickle
-from Env import Contextual_Bandit
+from src.Env import Contextual_Bandit
 
 # Set parameters
 Env_Seed = 0
