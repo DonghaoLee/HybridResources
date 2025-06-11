@@ -10,6 +10,11 @@ __pycache__/
 # Data files
 *.pkl
 
+# Picture files
+*.jpg
+*.jpeg
+*.png
+
 # Jupyter Notebook checkpoints
 .ipynb_checkpoints/
 
